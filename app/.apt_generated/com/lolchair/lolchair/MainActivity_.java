@@ -12,13 +12,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ListView;
+import com.lolchair.lolchair.R.id;
 import com.lolchair.lolchair.R.layout;
 import org.androidannotations.api.view.HasViews;
+import org.androidannotations.api.view.OnViewChangedListener;
 import org.androidannotations.api.view.OnViewChangedNotifier;
 
 public final class MainActivity_
     extends MainActivity
-    implements HasViews
+    implements HasViews, OnViewChangedListener
 {
 
     private final OnViewChangedNotifier onViewChangedNotifier_ = new OnViewChangedNotifier();
@@ -33,6 +36,8 @@ public final class MainActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
+        OnViewChangedNotifier.registerOnViewChangedListener(this);
+        adapter = PostListAdapter_.getInstance_(this);
     }
 
     @Override
@@ -59,6 +64,12 @@ public final class MainActivity_
 
     public static MainActivity_.IntentBuilder_ intent(Fragment supportFragment) {
         return new MainActivity_.IntentBuilder_(supportFragment);
+    }
+
+    @Override
+    public void onViewChanged(HasViews hasViews) {
+        postList = ((ListView) hasViews.findViewById(id.postList));
+        bindAdapter();
     }
 
     public static class IntentBuilder_ {
