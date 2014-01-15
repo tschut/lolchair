@@ -33,7 +33,7 @@ public class PostListAdapter extends BaseAdapter {
 
     @Background
     void loadPosts() {
-        addPosts(restClient.getRecentPosts().getPosts());
+        addPosts(restClient.getRecentPosts().posts);
     }
 
     @UiThread

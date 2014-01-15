@@ -22,6 +22,6 @@ public class PostView extends LinearLayout {
     }
 
     public void bind(Post post) {
-        title.setText(post.getTitle());
+        title.setText(post.title);
     }
 }
