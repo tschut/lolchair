@@ -4,6 +4,7 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import android.content.Context;
+import android.text.Html;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ public class PostView extends LinearLayout {
     }
 
     public void bind(Post post) {
-        // todo
+        title.setText(post.getTitle());
+        text.setText(Html.fromHtml(post.getExcerpt()));
     }
 }
