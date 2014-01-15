@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.rest.RestService;
 
 import android.content.Context;
 import android.view.View;
@@ -15,14 +18,28 @@ import android.widget.BaseAdapter;
 @EBean
 public class PostListAdapter extends BaseAdapter {
 
-    List<Post> posts = new ArrayList<Post>();
+    @RestService
+    LolchairRestClient restClient;
+
+    List<Post>         posts = new ArrayList<Post>();
 
     @RootContext
-    Context    context;
+    Context            context;
 
     @AfterInject
     void initAdapter() {
-        // load initial posts
+        loadPosts();
+    }
+
+    @Background
+    void loadPosts() {
+        addPosts(restClient.getRecentPosts().getPosts());
+    }
+
+    @UiThread
+    void addPosts(List<Post> newPosts) {
+        posts.addAll(newPosts);
+        notifyDataSetChanged();
     }
 
     @Override

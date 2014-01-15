@@ -26,9 +26,9 @@ public final class LolchairRestClient_
     }
 
     @Override
-    public Post[] getRecentPosts() {
+    public PostsReply getRecentPosts() {
         try {
-            return restTemplate.exchange(rootUrl.concat("/get_recent_posts"), HttpMethod.GET, null, Post[].class).getBody();
+            return restTemplate.exchange(rootUrl.concat("/get_recent_posts"), HttpMethod.GET, null, PostsReply.class).getBody();
         } catch (RestClientException e) {
             if (restErrorHandler!= null) {
                 restErrorHandler.onRestClientExceptionThrown(e);
