@@ -4,7 +4,6 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import android.content.Context;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,12 +13,12 @@ import com.squareup.picasso.Picasso;
 public class PostView extends LinearLayout {
 
     @ViewById
-    TextView        title;
+    TextView         title;
 
     @ViewById
-    ImageView       image;
+    LoadingImageView image;
 
-    private Context context;
+    private Context  context;
 
     public PostView(Context context) {
         super(context);

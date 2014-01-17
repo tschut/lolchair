@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <ImageView
+    <com.lolchair.lolchair.LoadingImageView_
         android:id="@+id/image"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
