@@ -7,6 +7,7 @@ import org.androidannotations.annotations.ViewById;
 
 import android.app.Activity;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ListView;
 
 @EActivity(R.layout.activity_main)
@@ -21,6 +22,8 @@ public class MainActivity extends Activity {
     @AfterViews
     void bindAdapter() {
         postList.setAdapter(adapter);
+        postList.addHeaderView(new View(this), null, true);
+        postList.addFooterView(new View(this), null, true);
     }
 
     @Override
