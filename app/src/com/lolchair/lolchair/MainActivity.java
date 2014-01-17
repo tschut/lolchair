@@ -38,10 +38,11 @@ public class MainActivity extends Activity {
 
     @AfterViews
     void bindAdapter() {
-        postList.setAdapter(adapter);
-        postList.addHeaderView(new View(this), null, true);
-        postList.addFooterView(new View(this), null, true);
+        View footer = getLayoutInflater().inflate(R.layout.footer_view, null);
+        postList.addFooterView(footer);
+        postList.addHeaderView(new View(this));
         postList.setOnScrollListener(new WaitForEndScrollListener());
+        postList.setAdapter(adapter);
     }
 
     @Override
