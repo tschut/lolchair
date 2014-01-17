@@ -3,9 +3,12 @@ package com.lolchair.lolchair;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AbsListView;
@@ -39,8 +42,8 @@ public class MainActivity extends Activity {
     @AfterViews
     void bindAdapter() {
         View footer = getLayoutInflater().inflate(R.layout.footer_view, null);
-        postList.addFooterView(footer);
-        postList.addHeaderView(new View(this));
+        postList.addFooterView(footer, null, false);
+        postList.addHeaderView(new View(this), null, false);
         postList.setOnScrollListener(new WaitForEndScrollListener());
         postList.setAdapter(adapter);
     }
@@ -49,5 +52,11 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @ItemClick(R.id.postList)
+    void postItemClicked(Post post) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.url.toString()));
+        startActivity(browserIntent);
     }
 }

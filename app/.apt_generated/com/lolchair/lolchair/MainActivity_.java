@@ -12,8 +12,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import com.lolchair.lolchair.R.id;
 import com.lolchair.lolchair.R.layout;
 import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
@@ -68,7 +69,22 @@ public final class MainActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        postList = ((ListView) hasViews.findViewById(id.postList));
+        postList = ((ListView) hasViews.findViewById(com.lolchair.lolchair.R.id.postList));
+        {
+            AdapterView<?> view = ((AdapterView<?> ) hasViews.findViewById(com.lolchair.lolchair.R.id.postList));
+            if (view!= null) {
+                view.setOnItemClickListener(new OnItemClickListener() {
+
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        MainActivity_.this.postItemClicked(((Post) parent.getAdapter().getItem(position)));
+                    }
+
+                }
+                );
+            }
+        }
         bindAdapter();
     }
 

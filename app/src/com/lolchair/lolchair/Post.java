@@ -13,5 +13,6 @@ public class Post {
 
     String     title;
     Attachment thumbnail_images;
+    URL        url;
 
 }
