@@ -3,11 +3,15 @@ package com.lolchair.lolchair;
 import java.net.URL;
 
 public class Post {
-    class Attachment {
+    class ImageResource {
         URL url;
     }
 
-    String       title;
-    Attachment[] attachments;
+    class Attachment {
+        ImageResource full;
+    }
+
+    String     title;
+    Attachment thumbnail_images;
 
 }

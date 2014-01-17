@@ -8,20 +8,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 @EViewGroup(R.layout.post_view)
 public class PostView extends LinearLayout {
 
     @ViewById
-    TextView  title;
+    TextView        title;
 
     @ViewById
-    ImageView image;
+    ImageView       image;
+
+    private Context context;
 
     public PostView(Context context) {
         super(context);
+        this.context = context;
     }
 
     public void bind(Post post) {
         title.setText(post.title);
+        Picasso.with(context).load(post.thumbnail_images.full.url.toString()).into(image);
     }
 }
