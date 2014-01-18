@@ -3,7 +3,6 @@ package com.lolchair.lolchair;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -18,21 +17,23 @@ import android.widget.BaseAdapter;
 @EBean
 public class PostListAdapter extends BaseAdapter {
 
-    private static final int POSTS_PER_REQUEST = 5;
+    private static final int     POSTS_PER_REQUEST = 5;
 
     @RestService
-    LolchairRestClient       restClient;
+    LolchairRestClient           restClient;
 
-    private List<Post>       posts             = new ArrayList<Post>();
+    private List<Post>           posts             = new ArrayList<Post>();
 
-    private int              page              = 1;
-    private boolean          isLoading         = false;
+    private int                  page              = 1;
+    private boolean              isLoading         = false;
 
     @RootContext
-    Context                  context;
+    Context                      context;
 
-    @AfterInject
-    void initAdapter() {
+    private INoMorePagesCallback callback;
+
+    public void initAdapter(INoMorePagesCallback callback) {
+        this.callback = callback;
         loadPosts(false);
     }
 
@@ -43,7 +44,11 @@ public class PostListAdapter extends BaseAdapter {
             if (nextPage) {
                 page++;
             }
-            addPosts(restClient.getRecentPosts(POSTS_PER_REQUEST, page).posts);
+            PostsReply postsReply = restClient.getRecentPosts(POSTS_PER_REQUEST, page);
+            addPosts(postsReply.posts);
+            if (postsReply.pages == page) {
+                callback.noMorePosts();
+            }
             isLoading = false;
         }
     }

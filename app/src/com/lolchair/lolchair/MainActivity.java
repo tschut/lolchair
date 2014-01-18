@@ -4,6 +4,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import android.app.Activity;
@@ -14,17 +15,15 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements INoMorePagesCallback {
     private final class WaitForEndScrollListener implements OnScrollListener {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
             if (scrollState == SCROLL_STATE_IDLE) {
                 if (postList.getLastVisiblePosition() >= postList.getCount() - 3) {
                     adapter.nextPage();
-                    Toast.makeText(getApplicationContext(), "bla", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -40,13 +39,16 @@ public class MainActivity extends Activity {
     @Bean
     PostListAdapter adapter;
 
+    private View    footerView;
+
     @AfterViews
     void bindAdapter() {
-        View footer = getLayoutInflater().inflate(R.layout.footer_view, null);
-        postList.addFooterView(footer, null, false);
+        footerView = getLayoutInflater().inflate(R.layout.footer_view, null);
+        postList.addFooterView(footerView, null, false);
         postList.addHeaderView(new View(this), null, false);
         postList.setOnScrollListener(new WaitForEndScrollListener());
         postList.setAdapter(adapter);
+        adapter.initAdapter(this);
     }
 
     @Override
@@ -59,5 +61,11 @@ public class MainActivity extends Activity {
     void postItemClicked(Post post) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.url.toString()));
         startActivity(browserIntent);
+    }
+
+    @Override
+    @UiThread
+    public void noMorePosts() {
+        postList.removeFooterView(footerView);
     }
 }
