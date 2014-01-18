@@ -5,6 +5,7 @@
 
 package com.lolchair.lolchair;
 
+import java.util.HashMap;
 import org.androidannotations.api.rest.RestErrorHandler;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
@@ -26,9 +27,12 @@ public final class LolchairRestClient_
     }
 
     @Override
-    public PostsReply getRecentPosts() {
+    public PostsReply getRecentPosts(int count, int page) {
+        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
+        urlVariables.put("count", count);
+        urlVariables.put("page", page);
         try {
-            return restTemplate.exchange(rootUrl.concat("/get_recent_posts"), HttpMethod.GET, null, PostsReply.class).getBody();
+            return restTemplate.exchange(rootUrl.concat("/get_recent_posts/?count={count}&page={page}"), HttpMethod.GET, null, PostsReply.class, urlVariables).getBody();
         } catch (RestClientException e) {
             if (restErrorHandler!= null) {
                 restErrorHandler.onRestClientExceptionThrown(e);

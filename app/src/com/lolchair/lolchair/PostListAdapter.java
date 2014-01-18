@@ -18,13 +18,15 @@ import android.widget.BaseAdapter;
 @EBean
 public class PostListAdapter extends BaseAdapter {
 
-    @RestService
-    LolchairRestClient restClient;
+    private static final int POSTS_PER_REQUEST = 5;
 
-    List<Post>         posts = new ArrayList<Post>();
+    @RestService
+    LolchairRestClient       restClient;
+
+    private List<Post>       posts             = new ArrayList<Post>();
 
     @RootContext
-    Context            context;
+    Context                  context;
 
     @AfterInject
     void initAdapter() {
@@ -33,7 +35,7 @@ public class PostListAdapter extends BaseAdapter {
 
     @Background
     void loadPosts() {
-        addPosts(restClient.getRecentPosts().posts);
+        addPosts(restClient.getRecentPosts(POSTS_PER_REQUEST, 1).posts);
     }
 
     @UiThread

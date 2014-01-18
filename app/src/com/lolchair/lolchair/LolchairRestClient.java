@@ -6,6 +6,6 @@ import org.springframework.http.converter.json.GsonHttpMessageConverter;
 
 @Rest(rootUrl = "http://www.lolchair.com/api", converters = GsonHttpMessageConverter.class)
 public interface LolchairRestClient {
-    @Get("/get_recent_posts")
-    PostsReply getRecentPosts();
+    @Get("/get_recent_posts/?count={count}&page={page}")
+    PostsReply getRecentPosts(int count, int page);
 }
