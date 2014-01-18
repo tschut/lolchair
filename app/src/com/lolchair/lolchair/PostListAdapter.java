@@ -25,17 +25,27 @@ public class PostListAdapter extends BaseAdapter {
 
     private List<Post>       posts             = new ArrayList<Post>();
 
+    private int              page              = 1;
+    private boolean          isLoading         = false;
+
     @RootContext
     Context                  context;
 
     @AfterInject
     void initAdapter() {
-        loadPosts();
+        loadPosts(false);
     }
 
     @Background
-    void loadPosts() {
-        addPosts(restClient.getRecentPosts(POSTS_PER_REQUEST, 1).posts);
+    void loadPosts(boolean nextPage) {
+        if (!isLoading) {
+            isLoading = true;
+            if (nextPage) {
+                page++;
+            }
+            addPosts(restClient.getRecentPosts(POSTS_PER_REQUEST, page).posts);
+            isLoading = false;
+        }
     }
 
     @UiThread
@@ -71,5 +81,9 @@ public class PostListAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public void nextPage() {
+        loadPosts(true);
     }
 }

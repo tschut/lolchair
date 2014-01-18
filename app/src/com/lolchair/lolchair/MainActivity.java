@@ -22,7 +22,8 @@ public class MainActivity extends Activity {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
             if (scrollState == SCROLL_STATE_IDLE) {
-                if (postList.getLastVisiblePosition() >= postList.getCount() - 1) {
+                if (postList.getLastVisiblePosition() >= postList.getCount() - 3) {
+                    adapter.nextPage();
                     Toast.makeText(getApplicationContext(), "bla", Toast.LENGTH_SHORT).show();
                 }
             }
