@@ -4,19 +4,21 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
 @EActivity(R.layout.activity_main)
+@OptionsMenu(R.menu.main)
 public class MainActivity extends Activity implements INoMorePagesCallback {
     private final class WaitForEndScrollListener implements OnScrollListener {
         @Override
@@ -51,16 +53,15 @@ public class MainActivity extends Activity implements INoMorePagesCallback {
         adapter.initAdapter(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
     @ItemClick(R.id.postList)
     void postItemClicked(Post post) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(post.url.toString()));
         startActivity(browserIntent);
+    }
+
+    @OptionsItem
+    void menuAbout() {
+        AboutActivity_.intent(this).start();
     }
 
     @Override
