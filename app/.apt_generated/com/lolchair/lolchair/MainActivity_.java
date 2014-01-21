@@ -108,11 +108,25 @@ public final class MainActivity_
             return true;
         }
         int itemId_ = item.getItemId();
+        if (itemId_ == com.lolchair.lolchair.R.id.menu_submit_picture) {
+            menuSubmitPicture();
+            return true;
+        }
         if (itemId_ == com.lolchair.lolchair.R.id.menu_about) {
             menuAbout();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case  1 :
+                MainActivity_.this.submitPicture(resultCode, data);
+                break;
+        }
     }
 
     @Override

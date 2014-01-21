@@ -36,6 +36,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lolchair.lolchair.MainActivity_" />
         </activity>
+        <activity
+            android:name="com.lolchair.lolchair.SubmitActivity_"
+            android:label="@string/title_activity_submit"
+            android:parentActivityName="com.lolchair.lolchair.MainActivity_" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.lolchair.lolchair.MainActivity_" />
+        </activity>
     </application>
 
 </manifest>

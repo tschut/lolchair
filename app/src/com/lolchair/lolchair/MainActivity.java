@@ -4,6 +4,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
@@ -12,6 +13,7 @@ import org.androidannotations.annotations.ViewById;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -20,6 +22,8 @@ import android.widget.ListView;
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.main)
 public class MainActivity extends Activity implements INoMorePagesCallback {
+    private static final int ACTION_SUBMIT_PICTURE = 1;
+
     private final class WaitForEndScrollListener implements OnScrollListener {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -62,6 +66,20 @@ public class MainActivity extends Activity implements INoMorePagesCallback {
     @OptionsItem
     void menuAbout() {
         AboutActivity_.intent(this).start();
+    }
+
+    @OptionsItem
+    void menuSubmitPicture() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, ACTION_SUBMIT_PICTURE);
+    }
+
+    @OnActivityResult(ACTION_SUBMIT_PICTURE)
+    void submitPicture(int resultCode, Intent intent) {
+        if (resultCode == RESULT_OK) {
+            Intent submitActivityIntent = SubmitActivity_.intent(this).get().setData(intent.getData());
+            startActivity(submitActivityIntent);
+        }
     }
 
     @Override

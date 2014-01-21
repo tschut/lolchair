@@ -14,5 +14,8 @@
     <string name="link_facebook"><a href="https://www.facebook.com/lolchair">www.facebook.com/lolchair</a></string>
     <string name="visit_google">Google+</string>
     <string name="link_google"><a href="https://plus.google.com/+Lolchairlol">plus.google.com/+Lolchairlol</a></string>
+    <string name="submit">Submit</string>
+    <string name="title_activity_submit">Submit a picture</string>
+    <string name="add_message_to_submission">Add a message here (optional)</string>
 
 </resources>
