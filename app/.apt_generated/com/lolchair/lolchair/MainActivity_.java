@@ -108,12 +108,12 @@ public final class MainActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == com.lolchair.lolchair.R.id.menu_submit_picture) {
-            menuSubmitPicture();
-            return true;
-        }
         if (itemId_ == com.lolchair.lolchair.R.id.menu_about) {
             menuAbout();
+            return true;
+        }
+        if (itemId_ == com.lolchair.lolchair.R.id.menu_submit_picture) {
+            menuSubmitPicture();
             return true;
         }
         return false;

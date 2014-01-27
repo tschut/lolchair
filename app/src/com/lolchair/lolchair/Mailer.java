@@ -1,11 +1,11 @@
 package com.lolchair.lolchair;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -16,11 +16,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.UiThread;
+import org.apache.commons.io.IOUtils;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -33,15 +35,17 @@ public class Mailer {
 
     private Session session = createSessionObject();
 
-    public void submit(String comment, File image) {
+    public void submit(String comment, InputStream inputStream) {
         Toast.makeText(context, "Submitting picture", Toast.LENGTH_SHORT).show();
         Message message;
         try {
-            message = createMessage(comment, image);
+            message = createMessage(comment, inputStream);
             sendMessage(message);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -76,7 +80,7 @@ public class Mailer {
         });
     }
 
-    private Message createMessage(String body, File image) throws MessagingException, UnsupportedEncodingException {
+    private Message createMessage(String body, InputStream inputStream) throws MessagingException, IOException {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("lolchairSender@gmail.com", "lolchair app"));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress("tschut+lolchair@gmail.com", "tschut+lolchair@gmail.com"));
@@ -84,8 +88,8 @@ public class Mailer {
         message.setText(body);
 
         MimeBodyPart bodyPart = new MimeBodyPart();
-        bodyPart.setFileName(image.getName());
-        bodyPart.setDataHandler(new DataHandler(new FileDataSource(image.getAbsolutePath())));
+        bodyPart.setFileName("lolchair");
+        bodyPart.setDataHandler(new DataHandler(new ByteArrayDataSource(IOUtils.toByteArray(inputStream), "image/*")));
 
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(bodyPart);
