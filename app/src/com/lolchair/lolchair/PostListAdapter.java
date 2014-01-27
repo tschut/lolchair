@@ -8,6 +8,7 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.rest.RestService;
+import org.springframework.web.client.RestClientException;
 
 import android.content.Context;
 import android.view.View;
@@ -44,12 +45,17 @@ public class PostListAdapter extends BaseAdapter {
             if (nextPage) {
                 page++;
             }
-            PostsReply postsReply = restClient.getRecentPosts(POSTS_PER_REQUEST, page);
-            addPosts(postsReply.posts);
-            if (postsReply.pages == page) {
-                callback.noMorePosts();
+            try {
+                PostsReply postsReply = restClient.getRecentPosts(POSTS_PER_REQUEST, page);
+                addPosts(postsReply.posts);
+                if (postsReply.pages == page) {
+                    callback.noMorePosts();
+                }
+            } catch (RestClientException exception) {
+                // fail gracefully?
+            } finally {
+                isLoading = false;
             }
-            isLoading = false;
         }
     }
 

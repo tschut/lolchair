@@ -1,15 +1,21 @@
 package com.lolchair.lolchair;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
@@ -17,7 +23,6 @@ import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.UiThread;
 
 import android.content.Context;
-import android.net.Uri;
 import android.widget.Toast;
 
 @EBean
@@ -28,7 +33,7 @@ public class Mailer {
 
     private Session session = createSessionObject();
 
-    public void submit(String comment, Uri image) {
+    public void submit(String comment, File image) {
         Toast.makeText(context, "Submitting picture", Toast.LENGTH_SHORT).show();
         Message message;
         try {
@@ -71,12 +76,21 @@ public class Mailer {
         });
     }
 
-    private Message createMessage(String body, Uri image) throws MessagingException, UnsupportedEncodingException {
+    private Message createMessage(String body, File image) throws MessagingException, UnsupportedEncodingException {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("lolchairSender@gmail.com", "lolchair app"));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress("tschut+lolchair@gmail.com", "tschut+lolchair@gmail.com"));
         message.setSubject("lolchair submission");
         message.setText(body);
+
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setFileName(image.getName());
+        bodyPart.setDataHandler(new DataHandler(new FileDataSource(image.getAbsolutePath())));
+
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(bodyPart);
+        message.setContent(multipart);
+
         return message;
     }
 }
