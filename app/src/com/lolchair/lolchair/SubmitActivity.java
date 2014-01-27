@@ -1,5 +1,7 @@
 package com.lolchair.lolchair;
 
+import java.io.File;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
@@ -9,10 +11,13 @@ import org.androidannotations.annotations.ViewById;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.CursorLoader;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,7 +55,7 @@ public class SubmitActivity extends Activity {
 
     @Click
     void submitButtonClicked() {
-        mailer.submit(description.getText().toString(), imageUri);
+        mailer.submit(description.getText().toString(), new File(getRealPathFromURI(imageUri)));
         finish();
     }
 
@@ -66,4 +71,12 @@ public class SubmitActivity extends Activity {
         NavUtils.navigateUpFromSameTask(this);
     }
 
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 }
