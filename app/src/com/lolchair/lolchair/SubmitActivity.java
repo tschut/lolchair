@@ -18,9 +18,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 @EActivity(R.layout.activity_submit)
 public class SubmitActivity extends Activity {
@@ -51,6 +53,17 @@ public class SubmitActivity extends Activity {
             imageUri = getIntent().getData();
             submitImage.setImageURI(imageUri);
         }
+    }
+
+    @AfterViews
+    void setListenerOnDescriptionTextView() {
+        description.setOnEditorActionListener(new OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                submitButtonClicked();
+                return true;
+            }
+        });
     }
 
     @Click

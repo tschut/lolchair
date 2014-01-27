@@ -40,8 +40,8 @@
                 android:ems="10"
                 android:gravity="top|left"
                 android:hint="@string/add_message_to_submission"
-                android:inputType="textMultiLine"
-                android:lines="3" />
+                android:inputType="text"
+                android:lines="1" />
 
             <Button
                 android:id="@+id/submitButton"
