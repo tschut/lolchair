@@ -17,5 +17,6 @@
     <string name="submit">Submit</string>
     <string name="title_activity_submit">Submit a picture</string>
     <string name="add_message_to_submission">Add a message here (optional)</string>
+    <string name="rate">Rate!</string>
 
 </resources>

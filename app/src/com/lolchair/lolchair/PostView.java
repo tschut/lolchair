@@ -1,11 +1,15 @@
 package com.lolchair.lolchair;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import android.content.Context;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -22,11 +26,26 @@ public class PostView extends LinearLayout {
     @ViewById
     RatingBar        rating;
 
+    @ViewById
+    Button           rateButton;
+
     private Context  context;
 
     public PostView(Context context) {
         super(context);
         this.context = context;
+    }
+
+    @AfterViews
+    void initRatingBar() {
+        rating.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if (fromUser) {
+                    rateButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     public void bind(Post post) {
