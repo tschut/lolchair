@@ -11,7 +11,13 @@ public class Post {
         ImageResource full;
     }
 
-    String     title;
-    Attachment thumbnail_images;
-    URL        url;
+    class CustomFields {
+        String[] rating;
+        String[] votes;
+    }
+
+    String       title;
+    Attachment   thumbnail_images;
+    URL          url;
+    CustomFields custom_fields;
 }

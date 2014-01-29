@@ -48,4 +48,16 @@ public class LoadingImageView extends RelativeLayout implements Target {
         spinner.setVisibility(View.VISIBLE);
         loadedImage.setVisibility(View.INVISIBLE);
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (loadedImage.getVisibility() == View.INVISIBLE) {
+            spinner.measure(widthMeasureSpec, heightMeasureSpec);
+            setMeasuredDimension(spinner.getMeasuredWidth(), spinner.getMeasuredHeight());
+        } else {
+            loadedImage.measure(widthMeasureSpec, heightMeasureSpec);
+            setMeasuredDimension(loadedImage.getMeasuredWidth(), loadedImage.getMeasuredHeight());
+        }
+    }
 }
