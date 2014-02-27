@@ -1,10 +1,12 @@
 package com.lolchair.lolchair;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -48,8 +50,13 @@ public class PostView extends LinearLayout {
         });
     }
 
+    @Click(R.id.rateButton)
+    void rateButtonClicked() {
+
+    }
+
     public void bind(Post post) {
-        title.setText(post.title);
+        title.setText(Html.fromHtml(post.title));
         Picasso.with(context).load(post.thumbnail_images.full.url.toString()).into(image);
         rating.setRating(getPostRating(post));
     }
