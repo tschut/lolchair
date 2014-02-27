@@ -35,7 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:stepSize="1" />
 
     <Button
         android:id="@+id/rateButton"
@@ -44,6 +45,15 @@
         android:layout_below="@+id/rating"
         android:layout_centerHorizontal="true"
         android:text="@string/rate"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/rateSpinner"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rating"
+        android:layout_centerHorizontal="true"
         android:visibility="gone" />
 
 </RelativeLayout>

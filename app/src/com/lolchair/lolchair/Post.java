@@ -16,6 +16,7 @@ public class Post {
         String[] votes;
     }
 
+    int          id;
     String       title;
     Attachment   thumbnail_images;
     URL          url;
