@@ -1,13 +1,16 @@
 package com.lolchair.lolchair;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.rest.RestService;
+import org.apache.commons.io.IOUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -25,18 +28,18 @@ import android.widget.TextView.OnEditorActionListener;
 public class SubmitActivity extends Activity {
 
     @ViewById
-    protected ImageView submitImage;
+    protected ImageView            submitImage;
 
     @ViewById
-    protected TextView  description;
+    protected TextView             description;
 
     @ViewById
-    protected Button    submitButton;
+    protected Button               submitButton;
 
-    @Bean
-    protected Mailer    mailer;
+    @RestService
+    protected LolchairServerClient serverClient;
 
-    protected Uri       imageUri;
+    protected Uri                  imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +68,19 @@ public class SubmitActivity extends Activity {
 
     @Click
     void submitButtonClicked() {
-        try {
-            mailer.submit(description.getText().toString(), getContentResolver().openInputStream(imageUri));
-        } catch (FileNotFoundException e) {
-        }
+        sendSubmission();
         finish();
+    }
+
+    @Background
+    void sendSubmission() {
+        try {
+            serverClient.submit(description.getText().toString(), IOUtils.toByteArray(getContentResolver().openInputStream(imageUri)));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)

@@ -52,7 +52,7 @@ public class PostListAdapter extends BaseAdapter {
                     callback.noMorePosts();
                 }
             } catch (RestClientException exception) {
-                // fail gracefully?
+                exception.printStackTrace();
             } finally {
                 isLoading = false;
             }

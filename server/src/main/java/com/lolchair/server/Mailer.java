@@ -1,4 +1,4 @@
-package com.lolchair.lolchair;
+package com.lolchair.server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,25 +18,25 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.RootContext;
-import org.androidannotations.annotations.UiThread;
 import org.apache.commons.io.IOUtils;
 
-import android.content.Context;
-import android.widget.Toast;
-
-@EBean
 public class Mailer {
-
-    @RootContext
-    Context         context;
-
     private Session session = createSessionObject();
+    private String  password;
+    private String  username;
+
+    public Mailer() {
+        Properties properties = new Properties();
+        try {
+            properties.load(getClass().getResourceAsStream("mail.properties"));
+            username = properties.getProperty("username");
+            password = properties.getProperty("password");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void submit(String comment, InputStream inputStream) {
-        Toast.makeText(context, "Submitting picture", Toast.LENGTH_SHORT).show();
         Message message;
         try {
             message = createMessage(comment, inputStream);
@@ -50,19 +50,12 @@ public class Mailer {
         }
     }
 
-    @Background
     void sendMessage(Message message) {
         try {
             Transport.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-        submissionDone(context);
-    }
-
-    @UiThread
-    void submissionDone(Context context) {
-        Toast.makeText(context, "Submission successful", Toast.LENGTH_SHORT).show();
     }
 
     private Session createSessionObject() {
@@ -75,7 +68,7 @@ public class Mailer {
         return Session.getInstance(properties, new javax.mail.Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("lolchairSender", "blRymiU9GtZ4h0T1PFZN");
+                return new PasswordAuthentication(username, password);
             }
         });
     }
