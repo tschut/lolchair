@@ -29,3 +29,4 @@ proguard/
 .idea/
 .apt_generated
 .apt_generated
+app/.apt_generated/com/lolchair/lolchair/LolchairRestClient_.java
