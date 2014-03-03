@@ -22,7 +22,8 @@ import android.widget.ListView;
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.main)
 public class MainActivity extends Activity implements INoMorePagesCallback {
-    private static final int ACTION_SUBMIT_PICTURE = 1;
+    private static final int ACTION_SUBMIT_GALLERY = 0;
+    private static final int ACTION_SUBMIT_CAMERA  = 1;
 
     private final class WaitForEndScrollListener implements OnScrollListener {
         @Override
@@ -69,17 +70,34 @@ public class MainActivity extends Activity implements INoMorePagesCallback {
     }
 
     @OptionsItem
-    void menuSubmitPicture() {
+    void menuSubmitGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, ACTION_SUBMIT_PICTURE);
+        startActivityForResult(intent, ACTION_SUBMIT_GALLERY);
     }
 
-    @OnActivityResult(ACTION_SUBMIT_PICTURE)
-    void submitPicture(int resultCode, Intent intent) {
+    @OptionsItem
+    void menuSubmitCamera() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, ACTION_SUBMIT_CAMERA);
+    }
+
+    @OnActivityResult(ACTION_SUBMIT_GALLERY)
+    void submitPictureGallery(int resultCode, Intent intent) {
         if (resultCode == RESULT_OK) {
-            Intent submitActivityIntent = SubmitActivity_.intent(this).get().setData(intent.getData());
-            startActivity(submitActivityIntent);
+            submitPicture(intent.getData());
         }
+    }
+
+    @OnActivityResult(ACTION_SUBMIT_CAMERA)
+    void submitPictureCamera(int resultCode, Intent intent) {
+        if (resultCode == RESULT_OK) {
+            submitPicture(intent.getData());
+        }
+    }
+
+    private void submitPicture(Uri imageUri) {
+        Intent submitActivityIntent = SubmitActivity_.intent(this).get().setData(imageUri);
+        startActivity(submitActivityIntent);
     }
 
     @Override
