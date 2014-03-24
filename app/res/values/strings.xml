@@ -20,5 +20,7 @@
     <string name="rate">Rate!</string>
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
+    <string name="submitting_picture">Submitting picture ...</string>
+    <string name="submission_done">Submission done!</string>
 
 </resources>

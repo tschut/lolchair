@@ -12,6 +12,7 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
 import org.apache.commons.io.IOUtils;
@@ -30,6 +31,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 @EActivity(R.layout.activity_submit)
 public class SubmitActivity extends Activity {
@@ -89,6 +91,7 @@ public class SubmitActivity extends Activity {
 
     @Click
     void submitButtonClicked() {
+        Toast.makeText(this, R.string.submitting_picture, Toast.LENGTH_SHORT).show();
         sendSubmission();
         finish();
     }
@@ -102,11 +105,17 @@ public class SubmitActivity extends Activity {
             imageBitmap.compress(CompressFormat.JPEG, 70, oStream);
 
             serverClient.submit(description.getText().toString(), IOUtils.toByteArray(new FileInputStream(imageFile)));
+            submissionDone();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @UiThread
+    protected void submissionDone() {
+        Toast.makeText(this, R.string.submission_done, Toast.LENGTH_SHORT).show();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
