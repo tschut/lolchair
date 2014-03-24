@@ -1,7 +1,11 @@
 package com.lolchair.lolchair;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -14,6 +18,9 @@ import org.apache.commons.io.IOUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +33,8 @@ import android.widget.TextView.OnEditorActionListener;
 
 @EActivity(R.layout.activity_submit)
 public class SubmitActivity extends Activity {
+    public static final String     IMAGE_PATH = "com.lolchair.lolchair.image_path";
+    public static final String     IMAGE_URI  = "com.lolchair.lolchair.image_uri";
 
     @ViewById
     protected ImageView            submitImage;
@@ -39,7 +48,7 @@ public class SubmitActivity extends Activity {
     @RestService
     protected LolchairServerClient serverClient;
 
-    protected Uri                  imageUri;
+    private Bitmap                 imageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +58,21 @@ public class SubmitActivity extends Activity {
 
     @AfterViews
     void setImage() {
-        if (getIntent() != null && getIntent().getData() != null) {
-            imageUri = getIntent().getData();
-            submitImage.setImageURI(imageUri);
+        if (getIntent() != null) {
+            String imagePath = getIntent().getStringExtra(IMAGE_PATH);
+            if (getIntent().getStringExtra(IMAGE_URI) != null) {
+                try {
+                    Uri imageUri = Uri.parse(getIntent().getStringExtra(IMAGE_URI));
+                    imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                } catch (FileNotFoundException e) {
+                    // TODO fail better
+                    e.printStackTrace();
+                }
+                submitImage.setImageBitmap(imageBitmap);
+            } else {
+                imageBitmap = BitmapFactory.decodeFile(imagePath);
+                submitImage.setImageBitmap(imageBitmap);
+            }
         }
     }
 
@@ -75,7 +96,12 @@ public class SubmitActivity extends Activity {
     @Background
     void sendSubmission() {
         try {
-            serverClient.submit(description.getText().toString(), IOUtils.toByteArray(getContentResolver().openInputStream(imageUri)));
+            File outputDir = getCacheDir();
+            File imageFile = File.createTempFile("prefix", "extension", outputDir);
+            OutputStream oStream = new FileOutputStream(imageFile);
+            imageBitmap.compress(CompressFormat.JPEG, 70, oStream);
+
+            serverClient.submit(description.getText().toString(), IOUtils.toByteArray(new FileInputStream(imageFile)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

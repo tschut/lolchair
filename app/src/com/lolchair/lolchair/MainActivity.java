@@ -1,5 +1,10 @@
 package com.lolchair.lolchair;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -10,9 +15,11 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AbsListView;
@@ -47,6 +54,7 @@ public class MainActivity extends Activity implements INoMorePagesCallback {
     PostListAdapter adapter;
 
     private View    footerView;
+    private String  currentPicturePath;
 
     @AfterViews
     void bindAdapter() {
@@ -78,26 +86,45 @@ public class MainActivity extends Activity implements INoMorePagesCallback {
     @OptionsItem
     void menuSubmitCamera() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePicture, ACTION_SUBMIT_CAMERA);
+
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException e) {
+            // TODO handle error
+            e.printStackTrace();
+        }
+        if (photoFile != null) {
+            currentPicturePath = photoFile.getAbsolutePath();
+            takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            startActivityForResult(takePicture, ACTION_SUBMIT_CAMERA);
+        }
     }
 
     @OnActivityResult(ACTION_SUBMIT_GALLERY)
     void submitPictureGallery(int resultCode, Intent intent) {
         if (resultCode == RESULT_OK) {
-            submitPicture(intent.getData());
+            Intent submitActivityIntent = SubmitActivity_.intent(this).get();
+            submitActivityIntent.putExtra(SubmitActivity.IMAGE_URI, intent.getData().toString());
+            startActivity(submitActivityIntent);
         }
     }
 
     @OnActivityResult(ACTION_SUBMIT_CAMERA)
     void submitPictureCamera(int resultCode, Intent intent) {
         if (resultCode == RESULT_OK) {
-            submitPicture(intent.getData());
+            Intent submitActivityIntent = SubmitActivity_.intent(this).get();
+            submitActivityIntent.putExtra(SubmitActivity.IMAGE_PATH, currentPicturePath);
+            startActivity(submitActivityIntent);
         }
     }
 
-    private void submitPicture(Uri imageUri) {
-        Intent submitActivityIntent = SubmitActivity_.intent(this).get().setData(imageUri);
-        startActivity(submitActivityIntent);
+    @SuppressLint("SimpleDateFormat")
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
     @Override
